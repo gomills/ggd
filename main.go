@@ -1,9 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"encoding/hex"
+	"fmt"
 	"io"
-	"log"
 	"os"
 )
 
@@ -12,12 +13,18 @@ const (
 	defaultNColumns      = 8 // default number of columns with which to print the hex dump
 )
 
+// buffered writer for stdout
+var buffStdout = bufio.NewWriter(os.Stdout)
+
 func main() {
+
+	// 0. deffer buffer write
+	defer buffStdout.Flush()
 
 	// 1. parse flags
 	flags := parseFlags()
 
-	// 2. create a buffered reader for stdin's file descriptor and an index for its byte offset
+	// 2.1 create a buffered reader for stdin's file descriptor and an index for its byte offset
 	stdinReader := NewExactReader(os.Stdin, flags.bfSize<<20)
 	bi := ByteInd{}
 
@@ -36,7 +43,7 @@ func main() {
 		// read numDecodedBytesPerLine bytes from stdin
 		readBytes, err := stdinReader.ReadFull(decodedBytes)
 		if err == io.EOF { // equivalent to readBytes=0
-			os.Exit(0)
+			return
 		}
 
 		// encode them
@@ -59,7 +66,7 @@ func main() {
 
 			hexBytesToDump(hexDump, hexBytes)
 			writeToStdout(i, &bi, flags.rainbow, readBytes, decodedBytes, hexDump)
-			os.Exit(0)
+			return
 		}
 
 		hexBytesToDump(hexDump, hexBytes)
@@ -87,10 +94,10 @@ func writeToStdout(i int, bi *ByteInd, rainbow bool, readBytes int, decodedBytes
 	ascii := createAscii(decodedBytes[:readBytes])
 
 	if rainbow {
-		rainbowHexDump := hexDumpToRainbow(bi, hexDump, len(decodedBytes))
-		log.Printf("%08x (%04d)  |  %s  |  %s\n", i, i, string(rainbowHexDump), ascii)
+		rainbowHexDump := hexDumpToRainbow(bi, hexDump, readBytes)
+		fmt.Fprintf(buffStdout, "%08x (%04d)  |  %s  |  %s\n", i, i, string(rainbowHexDump), ascii)
 	} else {
-		log.Printf("%08x (%04d)  |  %s  |  %s\n", i, i, string(hexDump), ascii)
+		fmt.Fprintf(buffStdout, "%08x (%04d)  |  %s  |  %s\n", i, i, string(hexDump), ascii)
 	}
 
 }
@@ -150,8 +157,4 @@ func createAscii(src []byte) string {
 		}
 	}
 	return string(ascii)
-}
-
-func init() {
-	log.SetFlags(0)
 }

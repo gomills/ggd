@@ -2,7 +2,7 @@
 
 `ggd` is the rewrite of the `xxd` binary in pure go using **only the standard library**. Contains *NSFW* feature for making the hex dump filled with rainbow colors. Streams over stdin and buffers output reducing syscalls at most.
 
-```bash
+```text
 ~/ $ cat loremipsum.txt | ./ggd
 00000000 (0000)  |  4c6f 7265 6d20 6970 7375 6d20 646f 6c6f  |  Lorem ipsum dolo
 00000010 (0016)  |  7220 7369 7420 616d 6574 2c20 636f 6e73  |  r sit amet, cons
@@ -16,13 +16,13 @@
 00000090 (0144)  |  6961 6d2c 2071 7569 7320 6e6f 7374 7275  |  iam, quis nostru
 ```
 
-```bash
+```text
 ~/coding/ggd $ ./ggd -h
 Usage of ./ggd:
   -bf int
-        Buffer (MiB) size to assignate to the buffered reader. Default: 1 MiB (default 1)
+        Buffer (MiB) size to assignate to the buffered reader. (default 1)
   -c int
-        Number of columns in which to display the hex dump. Default: 8 columns. (default 8)
+        Number of columns in which to display the hex dump. (default 8)
   -color
         Choose wether to print a fully rainbowed hex dump. Default: false :(
 ```
