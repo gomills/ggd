@@ -12,8 +12,8 @@ type Flags struct {
 // parseFlags parses CLI flags and returns a Flags instance exposing them
 func parseFlags() Flags {
 
-	c := flag.Int("c", defaultNColumns, "Number of columns in which to display the hex dump. Default: 8 columns.")
-	bf := flag.Int("bf", defaultReadingBuffer, "Buffer (MiB) size to assignate to the buffered reader. Default: 1 MiB")
+	c := flag.Int("c", defaultNColumns, "Number of columns in which to display the hex dump.")
+	bf := flag.Int("bf", defaultReadingBuffer, "Buffer (MiB) size to assignate to the buffered reader.")
 	rainbow := flag.Bool("color", false, "Choose wether to print a fully rainbowed hex dump. Default: false :(")
 
 	flag.Parse()
